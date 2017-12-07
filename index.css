@@ -1,0 +1,42 @@
+.car{
+	position:absolute;
+	width:100px;
+	height:50px;
+	opacity:0.85;
+	background-color:#fff;
+	margin-top:200px;
+}
+
+.block
+{
+	position:absolute;
+	width:50px;
+	height:100px;
+	background-color:#B32D00;
+	right:10px;
+}
+
+.road{
+	background:black;
+	width:100%;
+	height:400px;
+}
+.sensor{
+	
+	margin-left:100px;
+	position:relative;
+	background-color:#fff;
+	opacity:0.5;
+	width:700px;
+	height:2px;
+	text-align:center; 
+}
+#sensor_1{
+	top:0px;
+}
+#sensor_2{
+	top:22px;
+}
+#sensor_3{
+	top:44px;
+}
