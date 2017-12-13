@@ -8,7 +8,7 @@ var tick = setInterval(function(){
 	checkSensor("sensor_3");
 	checkCollision()
 	moveCar()
-},40)
+},10)
 
 });
 
@@ -55,7 +55,7 @@ function moveCar(){
 
 function moveUp(){
 	if(carPos>0){
-		carPos-=25
+		carPos-=2;
 	}else{
 		carPos+=roadHeight-50
 	}
@@ -64,7 +64,7 @@ function moveUp(){
 }
 function moveDown(){
 	if(carPos+75<=400){
-		carPos+=25;
+		carPos+=2;
 	}else{
 		carPos=0;
 	}
@@ -85,8 +85,9 @@ function movetick(){
 		now=0;
 		//moveUp()
 		if(collisionTemp){
+			collisionTemp=false;
 			collision++;
-			console.log(collision);
+			$('#collosion_count').html(collision);
 		}
 		blockPosUpLeft=Math.random()*300;
 		$('#block_1').css("margin-top",blockPosUpLeft);
@@ -97,14 +98,14 @@ clearSensor()
 $('#car').css("background-color","white");
 }
 function clearSensor(){
-		$('#sensor_1').css("background-color","white");
-		$('#sensor_2').css("background-color","white");
-		$('#sensor_3').css("background-color","white");
-		sensorData={
-			"sensor_1":false,
-			"sensor_2":false,
-			"sensor_3":false,
-		}
+	
+	for(i in sensorData){
+		$("#"+i).css("background-color","white");
+		sensorData[i]=false;
+		$("#"+i+"_table").html("false").css("color","red");
+		
+	}
+	
 }
 function checkSensor(sensorName){
 
@@ -113,12 +114,13 @@ function checkSensor(sensorName){
 	var posRightBlock=parseInt($('#block_1').css("left").slice(0, -2));
 	//console.log("Right :"+posRightBlock+"sensorTop :"+sensorTop+" Blocklupleft :"+blockPosUpLeft);
 	if (posRightBlock<=700&&
-	(sensorTop>blockPosUpLeft-50&&sensorTop<blockPosUpLeft+50)
+	(sensorTop>blockPosUpLeft-60&&sensorTop<blockPosUpLeft+50)
 	){
 		$('#'+sensorName).css("background-color","red");
 		//Triggered sensor_1
 		sensorData[sensorName]=true;
 		
+		$("#"+sensorName+"_table").html("true").css("color","green ");
 	}
 }
 function checkCollision(){
