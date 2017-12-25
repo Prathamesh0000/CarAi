@@ -1,14 +1,23 @@
+var tickInt=50	;
+//<--choice-->
+var database =[[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0],		//<--carNow?
+							[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0],
+							[0,0,0,0,0,0,0,0]]
 
 $(document).ready(function(){
-
 var tick = setInterval(function(){
 	movetick();
 	checkSensor("sensor_1");
 	checkSensor("sensor_2");
 	checkSensor("sensor_3");
 	checkCollision()
-	moveCar()
-},10)
+	//moveCar()
+},tickInt)
 
 });
 
@@ -19,57 +28,132 @@ var sensorData={
 }
 var collision = 0;
 var blockPosUpLeft=0;
-var carPos=parseInt($('#car').css("margin-top").slice(0, -2)) ; 
+var carPos=parseInt($('#car').css("margin-top").slice(0, -2)) ;
 var roadHeight="400";
 var now=parseInt($('#block_1').css("right").slice(0, -2));
 var collisionTemp=false;
+var moveObj=move();
+
+function MaxInArray(temp){
+	var index = 0;
+	var value = temp[0];
+	var indArray=[0];
+	for (var i = 1; i < temp.length; i++) {
+  	if (temp[i] > value) {
+			indArray=[];
+			indArray.push(i)
+    	value = temp[i];
+    	index = i;
+  	}
+		else if(temp[i] == value){
+			indArray.push(i);
+		}
+	}
+	return indArray;
+}
+function positionNow(){
+	return Math.floor(carPos/50)
+}
 
 function moveCar(){
 	if(sensorData.sensor_1){
 		if(sensorData.sensor_2){
 			if(sensorData.sensor_3){
-				moveDown();
+				moveObj.blockDown();
 			}
 			else{
-				moveDown();
+				moveObj.blockDown();
 			}
 		}
 		else{
-			moveDown();
+			moveObj.blockDown();
 		}
 	}
 	else{
 		if(sensorData.sensor_3){
-				moveUp()
-			}		
+			moveObj.blockUp()
+			}
 		else{
 			if(sensorData.sensor_2){
-				
+
 			}
 			else{
-				
+
 			}
 		}
 	}
 }
 
-function moveUp(){
-	if(carPos>0){
-		carPos-=2;
-	}else{
-		carPos+=roadHeight-50
+function move() {
+var moveBy=2;
+var moveToBlock=50/moveBy;
+
+	function heuMove(){
+		var leastInd=MaxInArray(database[positionNow()])
+		position(leastInd[Math.floor(Math.random() * (leastInd.length+1))])
 	}
-	//console.log(carPos)
-	$('#car').css("margin-top",carPos);
-}
-function moveDown(){
-	if(carPos+75<=400){
-		carPos+=2;
-	}else{
-		carPos=0;
+	function position(y){
+		var x = positionNow()
+		if(x<y){
+			for(var i=x;i<y;i++){
+				blockDown()
+			}
+		}
+		else if(x>y){
+			for(var i=y;i<x;i++){
+				blockUp()
+			}
+		}
 	}
-	//console.log(carPos)
-	$('#car').css("margin-top",carPos);
+	function up(){
+		if(carPos>0){
+			carPos-=moveBy;
+		}else{
+			carPos+=roadHeight-50
+		}
+		//console.log(carPos)
+		$('#car').css("margin-top",carPos);
+	}
+	function down(){
+		if(carPos+50<=400){
+			carPos+=moveBy;
+		}else{
+			carPos=0;
+		}
+		//console.log(carPos)
+		$('#car').css("margin-top",carPos);
+	}
+
+	function blockUp(){
+		if(carPos>0){
+			for(var i=0;i<moveToBlock;i++){
+					up()
+			}
+		}else{
+			carPos+=roadHeight-50
+		}
+		$('#car').css("margin-top",carPos);
+	}
+	function blockDown(){
+
+		if(carPos+75<=400){
+			for(var i=0;i<moveToBlock;i++){
+					down()
+			}
+		}else{
+			carPos=0;
+		}
+		//console.log(carPos)
+		$('#car').css("margin-top",carPos);
+	}
+	return {
+		up:up,
+		down:down,
+		blockUp:blockUp,
+		blockDown,blockDown,
+		heuMove:heuMove,
+		position:position
+	}
 }
 
 //var change = setInterval(moveDown,100);
@@ -79,7 +163,7 @@ function moveDown(){
 function movetick(){
 	if($('#block_1').css("left").slice(0, -2)>0){
 		now+=25
-		$('#block_1').css("right",now);	
+		$('#block_1').css("right",now);
 }
 	else{
 		now=0;
@@ -92,24 +176,24 @@ function movetick(){
 		blockPosUpLeft=Math.random()*300;
 		$('#block_1').css("margin-top",blockPosUpLeft);
 		$('#block_1').css("right",now);
-		
+
 	}
 clearSensor()
 $('#car').css("background-color","white");
 }
 function clearSensor(){
-	
-	for(i in sensorData){
+
+	for(var i in sensorData){
 		$("#"+i).css("background-color","white");
 		sensorData[i]=false;
 		$("#"+i+"_table").html("false").css("color","red");
-		
+
 	}
-	
+
 }
 function checkSensor(sensorName){
 
-	var sensorTop=parseInt($('#car').css("margin-top").slice(0, -2))+parseInt($('#'+sensorName).css("top").slice(0, -2))-50; 
+	var sensorTop=parseInt($('#car').css("margin-top").slice(0, -2))+parseInt($('#'+sensorName).css("top").slice(0, -2))-50;
 	//console.log(sensorTop)
 	var posRightBlock=parseInt($('#block_1').css("left").slice(0, -2));
 	//console.log("Right :"+posRightBlock+"sensorTop :"+sensorTop+" Blocklupleft :"+blockPosUpLeft);
@@ -119,12 +203,12 @@ function checkSensor(sensorName){
 		$('#'+sensorName).css("background-color","red");
 		//Triggered sensor_1
 		sensorData[sensorName]=true;
-		
+
 		$("#"+sensorName+"_table").html("true").css("color","green ");
 	}
 }
 function checkCollision(){
-	var carTop=parseInt($('#car').css("margin-top").slice(0, -2)); 
+	var carTop=parseInt($('#car').css("margin-top").slice(0, -2));
 	var posRightBlock=parseInt($('#block_1').css("left").slice(0, -2));
 	if((blockPosUpLeft+100>parseInt(carTop))&&(blockPosUpLeft<parseInt(carTop+50))
 		&&posRightBlock<=100){

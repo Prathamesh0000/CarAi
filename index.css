@@ -27,6 +27,21 @@
 	width:100%;
 	height:400px;
 }
+
+.zones{
+	position: absolute;
+	width: 99%;
+	opacity:0.4;
+}
+
+.zones table{
+	width:100%;
+	border-collapse: collapse;
+	border-color:green;
+}
+.zones table tr {
+	height:49.75px
+}
 .sensor{
 	
 	margin-left:100px;
