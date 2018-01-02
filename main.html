@@ -1,9 +1,10 @@
 
 <head>
 
-
+  
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"
 ></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <link rel="stylesheet" href="index.css">
 
 </head>
@@ -18,36 +19,17 @@
   <div id="block_1" class="block"></div>
   <div class="zones">
     <table border="1px">
-      <tr>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-      </tr>      <tr>
-        <td></td>
-      </tr>      <tr>
-        <td></td>
-      </tr>      <tr>
-        <td></td>
-      </tr>
-      <tr>
-        <td></td>
-      </tr> 
+      <tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr><tr><td></td></tr>
     </table>
   </div>
 </div>
 
 
-<div class="collison info">Number of Collision : <span id="collosion_count">0</span></div>
+<div class="collison info">Number of test : <span id="test_count">0</span></br>Number of Collision : <span id="collosion_count">0</span></div>
+<div class="collison ratio info">Sucess % per 20 collison : <span id="collosion_ratio_count">0</span></div>
 
 <div class="info_sensor info">
-<table style=" ">
+<table id="sensor" style=" ">
   <tr>
     <th>Sensor_1</th>
     <th>Sensor_2</th> 
@@ -59,9 +41,11 @@
     <td id="sensor_3_table">false</td>
   </tr>
 </table>
+
 </div>
 
+<table id="database" style="width: 20%;"></table>
 
-
+<div id="chart"></div>
 </body>
 <script src="index.js"></script> 

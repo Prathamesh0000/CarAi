@@ -61,3 +61,10 @@
 #sensor_3{
 	top:44px;
 }
+table {
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid black;
+}

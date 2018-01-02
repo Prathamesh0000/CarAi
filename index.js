@@ -1,5 +1,15 @@
 
 var tickInt=5	;
+var noOfTest=0;
+var collisionPercentage=0;
+var graphData={y:[],type:'scatter'};
+var layout = {
+	yaxis: {
+	  tickformat: ',.0%',
+	  range: [0,1]
+	}
+  }
+  
 //<--choice(to)-->
 var database =[[0,0,0,0,0,0,0,0],
 			[0,0,0,0,0,0,0,0],
@@ -39,7 +49,21 @@ var moveObj=move();
 var posFrom=positionNow()
 var posTo=positionNow()
 var moved=false;
+var learn=false;
 
+function updateDatabaseData(){
+	var dataTable=$('#database')
+	var table;
+	for(var i=0;i<database.length;i++){
+		var tRow="<tr>"
+		for(var j=0;j<database[i].length;j++){
+			tRow+="<td>"+database[i][j]+"</td>"
+		}
+		tRow+="</tr>"
+		table+=tRow
+	}
+	dataTable.html(table);
+}
 function MaxInArray(temp){
 	var index = 0;
 	var value = temp[0];
@@ -97,10 +121,14 @@ var moveToBlock=50/moveBy;
 	function car(){
 		if((sensorData.sensor_1||sensorData.sensor_2||sensorData.sensor_3)){
 			if(!moved){
-			heuMove()
-			moved=true;
+				learn?heuMoveLearn():heuMove()
+				moved=true;
 			}
 		}
+	}
+	function heuMoveLearn(){
+		var leastInd=MaxInArray(database[positionNow()])
+		position(leastInd[Math.floor(Math.random() * (leastInd.length))])
 	}
 	function heuMove(){
 		var leastInd=MaxInArray(database[positionNow()])
@@ -181,6 +209,7 @@ var moveToBlock=50/moveBy;
 		blockUp:blockUp,
 		blockDown,blockDown,
 		heuMove:heuMove,
+		heuMoveLearn:heuMoveLearn,
 		position:position,
 		car:car
 
@@ -189,18 +218,20 @@ var moveToBlock=50/moveBy;
 
 //var change = setInterval(moveDown,100);
 
-
-
+var i=0;
+var collisionPrev=0;
 function movetick(){
+
 	if($('#block_1').css("left").slice(0, -2)>0){
 		now+=25
 		$('#block_1').css("right",now);
-}
+	}
 	else{
-
+		i++
+		noOfTest++
 		now=0;
 		//moveUp()
-		
+		$('#test_count').html(noOfTest);
 		if(moved){
 			if(collisionTemp){
 				database[posFrom][posTo]-=1;
@@ -208,8 +239,16 @@ function movetick(){
 				database[posFrom][posTo]+=1;
 			}
 		}
+		updateDatabaseData()
 		moved=false;
-		
+		if(i==20){
+			i=0;
+			collisionPercentage=((collision-collisionPrev)/20);
+			graphData.y.push(collisionPercentage)
+			Plotly.newPlot('chart', [graphData],layout);
+			collisionPrev=collision;
+			$('#collosion_ratio_count').html(collisionPercentage*100);
+		}
 		if(collisionTemp){
 			collisionTemp=false;
 			collision++;
@@ -231,8 +270,6 @@ function clearSensor(){
 		$("#"+i).css("background-color","white");
 		sensorData[i]=false;
 		$("#"+i+"_table").html("false").css("color","red");
-
-
 	}
 
 }
