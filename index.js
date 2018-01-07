@@ -234,7 +234,7 @@ function movetick(){
 		$('#test_count').html(noOfTest);
 		if(moved){
 			if(collisionTemp){
-				database[posFrom][posTo]-=1;
+				database[posFrom][posTo]-=4;
 			}else{
 				database[posFrom][posTo]+=1;
 			}
@@ -248,6 +248,8 @@ function movetick(){
 			Plotly.newPlot('chart', [graphData],layout);
 			collisionPrev=collision;
 			$('#collosion_ratio_count').html(collisionPercentage*100);
+
+			$('#car').css("margin-top",Math.floor(Math.random()*8));
 		}
 		if(collisionTemp){
 			collisionTemp=false;
